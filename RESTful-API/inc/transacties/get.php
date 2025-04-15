@@ -11,6 +11,11 @@ $sql = "SELECT
         JOIN 
             Categorieën ON tr_ct_id = ct_id";
 
+if (isset($_GET['balansid']) && !empty($_GET['balansid'])) {
+    $balansid = $conn->real_escape_string($_GET['balansid']);
+    $sql .= " WHERE tr_bl_id = '$balansid'";
+}
+
 $result = $conn->query($sql);
 
 if (!$result) {
@@ -20,7 +25,6 @@ if (!$result) {
     deliver_response($response);
     exit;
 }
-
 
 $data = [];
 while ($row = $result->fetch_assoc()) {
@@ -39,4 +43,6 @@ $response['data'] = json_encode($data, JSON_UNESCAPED_UNICODE);
 deliver_JSONresponse($response);
 
 exit;
+
 ?>
+
