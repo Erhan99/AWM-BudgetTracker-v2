@@ -21,11 +21,6 @@ interface ApiServiceBalans{
         @Body balans: Balans
     ): Response<Unit>
 
-    @PUT("balansen/")
-    suspend fun updateBalansen(
-        @Body balans: Balans
-    ): Response<Unit>
-
     @DELETE("balansen/")
     suspend fun deleteBalansen(
         @Query("id") id: String
