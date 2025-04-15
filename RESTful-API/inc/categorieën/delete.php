@@ -1,19 +1,25 @@
 <?php
-check_required_fields(["ct_id"]);
-
-if(!$stmt = $conn->prepare("delete from Categorieën where ct_id = ?")){
-	die('{"error":"Prepared Statement failed on prepare","errNo":' . json_encode($conn -> errno) .',"mysqlError":' . json_encode($conn -> error) .',"status":"fail"}');
+if (!isset($_GET['id']) || empty($_GET['id'])) {
+    die(json_encode(["error" => "Missing category ID", "status" => "fail"]));
 }
 
-if(!$stmt -> bind_param("i", $postvars['ct_id'])){
-	die('{"error":"Prepared Statement bind failed on bind","errNo":' . json_encode($conn -> errno) .',"mysqlError":' . json_encode($conn -> error) .',"status":"fail"}');
-}
-$stmt -> execute();
+$ct_id = intval($_GET['id']);
 
-if($conn->affected_rows == 0) {
-	$stmt -> close();
-	die('{"error":"Prepared Statement failed on execute : no rows affected","errNo":' . json_encode($conn -> errno) .',"mysqlError":' . json_encode($conn -> error) .',"status":"fail"}');
+if (!$stmt = $conn->prepare("DELETE FROM Categorieën WHERE ct_id = ?")) {
+    die(json_encode(["error" => "Prepared Statement failed on prepare", "errNo" => $conn->errno, "mysqlError" => $conn->error, "status" => "fail"]));
 }
-$stmt -> close();
-die('{"data":"ok","message":"Record deleted successfully","status":200}');
+
+if (!$stmt->bind_param("i", $ct_id)) {
+    die(json_encode(["error" => "Prepared Statement bind failed", "errNo" => $conn->errno, "mysqlError" => $conn->error, "status" => "fail"]));
+}
+
+$stmt->execute();
+
+if ($conn->affected_rows == 0) {
+    $stmt->close();
+    die(json_encode(["error" => "No rows affected", "errNo" => $conn->errno, "mysqlError" => $conn->error, "status" => "fail"]));
+}
+
+$stmt->close();
+die(json_encode(["data" => "ok", "message" => "Record deleted successfully", "status" => 200]));
 ?>
