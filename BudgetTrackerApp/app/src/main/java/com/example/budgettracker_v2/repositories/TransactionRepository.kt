@@ -8,28 +8,30 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Query
 
 interface ApiServiceTransaction{
-    //getest => werkt
     @GET("transacties/")
     suspend fun getTransacties(): ApiResponseTransactions
 
-    //getest => werkt
+    @GET("transacties/")
+    suspend fun geTransactiesByUser(
+        @Query("balansid") balansid: String
+    ): Response<Unit>
+
     @POST("transacties/")
     suspend fun postTransacties(
         @Body transaction: Transaction
     ): Response<Unit>
 
-    // niet getest
     @PUT("transacties/")
     suspend fun updateTransacties(
         @Body transaction: Transaction
     ): Response<Unit>
 
-    // niet getest
     @DELETE("transacties/")
     suspend fun deleteTransacties(
-        @Body transaction: Transaction
+        @Query("id") id: String
     ): Response<Unit>
 }
 
