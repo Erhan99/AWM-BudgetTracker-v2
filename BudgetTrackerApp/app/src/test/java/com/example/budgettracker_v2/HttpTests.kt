@@ -1,7 +1,7 @@
 package com.example.budgettracker_v2
 
 import com.example.budgettracker_v2.models.Transaction
-import com.example.budgettracker_v2.repositories.apiTransaction
+import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 

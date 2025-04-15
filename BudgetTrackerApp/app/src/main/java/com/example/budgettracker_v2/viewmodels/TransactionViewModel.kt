@@ -5,9 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.budgettracker_v2.models.Transaction
 import androidx.lifecycle.viewModelScope
-import com.example.budgettracker_v2.repositories.apiTransaction
+import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import kotlinx.coroutines.launch
-import java.io.IOException
 import android.util.Log
 class TransactionViewModel : ViewModel(){
     private val _transactions = MutableLiveData<List<Transaction>>()

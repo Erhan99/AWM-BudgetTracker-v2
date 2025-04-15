@@ -1,4 +1,4 @@
-package com.example.budgettracker_v2.repositories
+package com.example.budgettracker_v2.repositories.transaction
 
 import com.example.budgettracker_v2.models.Transaction
 
