@@ -14,7 +14,7 @@ import retrofit2.http.Query
 
 interface ApiServiceDatum{
     @GET("datums/")
-    suspend fun getDatums(): ApiServiceDatum
+    suspend fun getDatums(): ApiResponseDatums
 
     @POST("datums/")
     suspend fun postDatums(

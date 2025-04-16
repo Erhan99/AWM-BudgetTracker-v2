@@ -5,7 +5,7 @@ if(!$stmt = $conn->prepare("update Datums SET dt_datum = ?,  dt_jaar = ?, dt_maa
 	die('{"error":"Prepared Statement failed on prepare","errNo":' . json_encode($conn -> errno) .',"mysqlError":' . json_encode($conn -> error) .',"status":"fail"}');
 }
 
-if(!$stmt -> bind_param("siiii", $postvars['dt_datum'], $postvars['dt_jaar'], $postvars['dt_maand'], $postvars['dt_maand_num'], $postvars['dt_dag'], $postvars['dt_id'])){
+if(!$stmt -> bind_param("sisiii", $postvars['dt_datum'], $postvars['dt_jaar'], $postvars['dt_maand'], $postvars['dt_maand_num'], $postvars['dt_dag'], $postvars['dt_id'])){
 	die('{"error":"Prepared Statement bind failed on bind","errNo":' . json_encode($conn -> errno) .',"mysqlError":' . json_encode($conn -> error) .',"status":"fail"}');
 }
 $stmt -> execute();
