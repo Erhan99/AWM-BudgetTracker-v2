@@ -16,6 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.budgettracker_v2.navigation.AppNavigation
+import com.example.budgettracker_v2.ui.BudgetTrackerApp
 import com.example.budgettracker_v2.ui.NavBar
 import com.example.compose.BudgetTrackerTheme
 
@@ -24,15 +25,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
             BudgetTrackerTheme {
-                Scaffold(
-                    bottomBar = { NavBar(navController) }
-                ) { paddingValues ->
-                    Box(modifier = Modifier.padding(paddingValues)) {
-                        AppNavigation(navController)
-                    }
-                }
+                BudgetTrackerApp()
             }
         }
     }

@@ -17,7 +17,7 @@ interface ApiServiceTransaction{
     @GET("transacties/")
     suspend fun geTransactiesByUser(
         @Query("balansid") balansid: String
-    ): Response<Unit>
+    ): ApiResponseTransactions
 
     @POST("transacties/")
     suspend fun postTransacties(
