@@ -8,21 +8,24 @@ import androidx.lifecycle.viewModelScope
 import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import kotlinx.coroutines.launch
 import android.util.Log
+import com.example.budgettracker_v2.viewmodels.state.TransactionUIState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
 class TransactionViewModel : ViewModel(){
-    private val _transactions = MutableLiveData<List<Transaction>>()
-    val transactions: LiveData<List<Transaction>> get() = _transactions
+    private val _uiState = MutableStateFlow(TransactionUIState())
+    val uiState: StateFlow<TransactionUIState> = _uiState.asStateFlow()
 
-    init {
-        //getTransactions()
-        postTransaction()
-    }
-
-    private fun getTransactions(){
+     fun getTransactions(user:String){
         viewModelScope.launch {
             try{
-                val result = apiTransaction.getTransacties()
+                val result = apiTransaction.geTransactiesByUser(user)
                 Log.d("api result", result.toString())
-                _transactions.value = result.data
+                _uiState.update { currentState ->
+                    currentState.copy(transactions = result.data)
+                }
             }
             catch (e: Exception){
                 Log.d("api","api related problem: " + e)
@@ -32,7 +35,7 @@ class TransactionViewModel : ViewModel(){
     }
 
     //functie niet compleet, gemaakt om te testen
-    public fun postTransaction(){
+     fun postTransaction(){
         viewModelScope.launch {
             try{
                 val test = Transaction(tr_bedrag = 999.00, tr_mededeling = "testing post", tr_begunstigde = "testing post", tr_dt_id = 1, tr_bl_id = 1, tr_ct_id = 1)

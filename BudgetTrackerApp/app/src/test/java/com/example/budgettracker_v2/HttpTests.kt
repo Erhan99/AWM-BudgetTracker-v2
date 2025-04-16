@@ -30,7 +30,7 @@ class HttpTests {
     fun getTransactiesByUserStatus200Test(){
         runBlocking {
             val response = apiTransaction.geTransactiesByUser("2")
-            assertEquals(200, response.code())
+            assertEquals(200, response.status)
         }
     }
 
