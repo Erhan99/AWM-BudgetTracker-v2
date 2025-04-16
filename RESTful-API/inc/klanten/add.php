@@ -5,7 +5,7 @@ if(!$stmt = $conn->prepare("insert into Klanten (kl_naam, kl_voornaam, kl_email,
 	die('{"error":"Prepared Statement failed on prepare","errNo":' . json_encode($conn -> errno) .',"mysqlError":' . json_encode($conn -> error) .',"status":"fail"}');
 }
 
-if(!$stmt -> bind_param("ssss", $postvars['kl_naam'], $postvars['kl_voornaam'],  $postvars['kl_email'], $postvars['kl_wachtwoord'], $postvars['kl_isAdmin'])){
+if(!$stmt -> bind_param("ssssi", $postvars['kl_naam'], $postvars['kl_voornaam'],  $postvars['kl_email'], $postvars['kl_wachtwoord'], $postvars['kl_isAdmin'])){
 	die('{"error":"Prepared Statement bind failed on bind","errNo":' . json_encode($conn -> errno) .',"mysqlError":' . json_encode($conn -> error) .',"status":"fail"}');
 }
 $stmt -> execute();

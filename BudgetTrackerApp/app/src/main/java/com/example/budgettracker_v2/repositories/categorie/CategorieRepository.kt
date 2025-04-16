@@ -12,20 +12,20 @@ import retrofit2.http.PUT
 import retrofit2.http.Query
 
 interface ApiServiceCategorie{
-    @GET("categorieen/")
+    @GET("categorieën/")
     suspend fun getCategorieen(): ApiResponseKlanten
 
-    @POST("categorieen/")
+    @POST("categorieën/")
     suspend fun postCategorieen(
         @Body categorie: Categorie
     ): Response<Unit>
 
-    @PUT("categorieen/")
+    @PUT("categorieën/")
     suspend fun updateCategorieen(
         @Body categorie: Categorie
     ): Response<Unit>
 
-    @DELETE("categorieen/")
+    @DELETE("categorieën/")
     suspend fun deleteCategorieen(
         @Query("id") id: String
     ): Response<Unit>

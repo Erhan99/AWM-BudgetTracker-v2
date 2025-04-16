@@ -14,7 +14,7 @@ import retrofit2.http.Query
 
 interface ApiServiceBalans{
     @GET("balansen/")
-    suspend fun getBalansen(): ApiServiceBalans
+    suspend fun getBalansen(): ApiResponseBalansen
 
     @POST("balansen/")
     suspend fun postBalans(
