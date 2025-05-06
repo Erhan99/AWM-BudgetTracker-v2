@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.budgettracker_v2"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -61,6 +61,11 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+
+    //grafieken
+    implementation("com.patrykandpatrick.vico:compose:2.1.2")
+    implementation("com.patrykandpatrick.vico:compose-m2:2.1.2")
+    implementation("com.patrykandpatrick.vico:compose-m3:2.1.2")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
