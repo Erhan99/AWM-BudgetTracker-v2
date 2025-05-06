@@ -5,6 +5,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,11 +24,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.budgettracker_v2.models.Transaction
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
+import kotlin.math.exp
 
 @Composable
-fun TransactionScreen(VM: TransactionViewModel = viewModel()) {
+fun TransactionScreen(navController: NavController, VM: TransactionViewModel = viewModel()) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -71,14 +75,15 @@ fun TransactionScreen(VM: TransactionViewModel = viewModel()) {
                     }
                 }
         }
-        TransactionList(transactions = items, listState, isLoading.value)
+        TransactionList(transactions = items, listState, isLoading.value, navController)
     }
 }
 
 @Composable
-fun TransactionCard(modifier: Modifier = Modifier, transaction: Transaction){
+fun TransactionCard(modifier: Modifier = Modifier, transaction: Transaction, navController: NavController){
     val date = String.format("%s %s %s", transaction.dt_dag, transaction.dt_maand, transaction.dt_jaar)
     val price = String.format("€ %s", transaction.tr_bedrag)
+    val expanded = remember { mutableStateOf(false) }
     Card (modifier = modifier){
         Column (modifier = Modifier.padding(16.dp)){
             Row {
@@ -96,6 +101,31 @@ fun TransactionCard(modifier: Modifier = Modifier, transaction: Transaction){
                     fontWeight = FontWeight.Bold,
                     color = if(transaction.tr_bedrag < 0) Color(0xFFC62828) else Color(0xFF2E7D32)
                 )
+                Box {
+                    IconButton(onClick = { expanded.value = true }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "Menu")
+                    }
+                    DropdownMenu(
+                        expanded = expanded.value,
+                        onDismissRequest = { expanded.value = false }
+                    ) {
+                        DropdownMenuItem(
+                            onClick = {
+                                expanded.value = false
+                                navController.navigate("transactionDetails/${transaction.tr_id}")
+                            },
+                            text = { Text("Details") }
+                        )
+                        DropdownMenuItem(
+                            onClick = { expanded.value = false },
+                            text = { Text("Bewerken") }
+                        )
+                        DropdownMenuItem(
+                            onClick = { expanded.value = false },
+                            text = { Text("Verwijderen") }
+                        )
+                    }
+                }
             }
 
                 Text(
@@ -113,20 +143,20 @@ fun TransactionCard(modifier: Modifier = Modifier, transaction: Transaction){
                     text = transaction.tr_mededeling,
                     fontSize = 12.sp,
                 )
-            
+
         }
     }
 }
 
 @Composable
-fun TransactionList(transactions: List<Transaction>?, state: LazyListState, isLoading: Boolean){
+fun TransactionList(transactions: List<Transaction>?, state: LazyListState, isLoading: Boolean, navController: NavController){
     if (transactions != null){
         LazyColumn (
             state = state
         ){
             items(transactions){
                     transaction ->
-                TransactionCard(modifier = Modifier.padding(6.dp),transaction = transaction)
+                TransactionCard(modifier = Modifier.padding(6.dp), transaction = transaction, navController = navController)
             }
             if (isLoading) {
                 item {
@@ -146,4 +176,3 @@ fun TransactionList(transactions: List<Transaction>?, state: LazyListState, isLo
         )
     }
 }
-
