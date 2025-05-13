@@ -27,6 +27,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.budgettracker_v2.models.Transaction
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
+import com.google.gson.Gson
 import kotlin.math.exp
 
 @Composable
@@ -112,12 +113,16 @@ fun TransactionCard(modifier: Modifier = Modifier, transaction: Transaction, nav
                         DropdownMenuItem(
                             onClick = {
                                 expanded.value = false
-                                navController.navigate("transactionDetails/${transaction.tr_id}")
+                                val transactionJson = Gson().toJson(transaction)
+                                navController.navigate("transactionDetails/$transactionJson")
                             },
                             text = { Text("Details") }
                         )
                         DropdownMenuItem(
-                            onClick = { expanded.value = false },
+                            onClick = {
+                                expanded.value = false
+                                navController.navigate("transactionEdit")
+                            },
                             text = { Text("Bewerken") }
                         )
                         DropdownMenuItem(
