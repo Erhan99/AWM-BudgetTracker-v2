@@ -70,6 +70,8 @@ dependencies {
     implementation("com.patrykandpatrick.vico:compose-m2:2.1.2")
     implementation("com.patrykandpatrick.vico:compose-m3:2.1.2")
 
+    implementation("com.himanshoe:charty:2.1.0-beta03.2")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -78,3 +80,4 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 }
+

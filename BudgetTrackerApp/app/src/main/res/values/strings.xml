@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BudgetTracker_v2</string>
+    <string name="app_name">BudgetTracker</string>
     <string name="bedrag_dag">Totaal bedrag per dag</string>
     <string name="geen_transactie_maand">Geen transacties gevonden voor deze maand.</string>
     <string name="inkomsten">Inkomsten:</string>
