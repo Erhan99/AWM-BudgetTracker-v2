@@ -4,10 +4,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.budgettracker_v2.models.Transaction
 import com.example.budgettracker_v2.ui.HomeScreen
 import com.example.budgettracker_v2.ui.InsightScreen
 import com.example.budgettracker_v2.ui.TransactionScreen
 import com.example.budgettracker_v2.ui.TransactionDetailsScreen
+import com.example.budgettracker_v2.ui.TransactionEditScreen
+import com.google.gson.Gson
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
@@ -15,9 +18,13 @@ fun AppNavigation(navController: NavHostController) {
         composable("home") { HomeScreen() }
         composable(route = "transactions") { TransactionScreen(navController = navController) }
         composable("insights") { InsightScreen() }
-        composable("transactionDetails/{transactionId}") { backStackEntry ->
-            val transactionId = backStackEntry.arguments?.getString("transactionId")
-            TransactionDetailsScreen(transactionId = transactionId ?: "", navController = navController)
+        composable("transactionDetails/{transactionJson}") { backStackEntry ->
+            val transactionJson = backStackEntry.arguments?.getString("transactionJson")
+            val transaction = Gson().fromJson(transactionJson, Transaction::class.java)
+            TransactionDetailsScreen(transaction = transaction, navController = navController)
+        }
+        composable("transactionEdit") {
+            TransactionEditScreen(navController = navController)
         }
     }
 }

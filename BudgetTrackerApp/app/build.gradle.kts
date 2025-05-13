@@ -54,6 +54,9 @@ dependencies {
     //icons
     implementation("androidx.compose.material:material-icons-extended:1.5.0")
 
+    //Json
+    implementation("com.google.code.gson:gson:2.8.9")
+
     //navigation
     implementation("androidx.navigation:navigation-compose:2.8.9")
 

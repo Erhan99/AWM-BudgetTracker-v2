@@ -11,13 +11,12 @@ import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
+import com.example.budgettracker_v2.models.Transaction
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionDetailsScreen(transactionId: String, navController: NavController, VM: TransactionViewModel = viewModel()) {
-    val uiState by VM.uiState.collectAsState()
-    val transaction = uiState.transactions?.find { it.tr_id.toString() == transactionId }
-
+fun TransactionDetailsScreen(transaction: Transaction, navController: NavController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -30,28 +29,45 @@ fun TransactionDetailsScreen(transactionId: String, navController: NavController
             )
         }
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues), contentAlignment = Alignment.Center) {
-            transaction?.let {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text(text = "Begunstigde: ${it.tr_begunstigde}", style = MaterialTheme.typography.headlineMedium)
-                    Text(text = "Bedrag: € ${it.tr_bedrag}", style = MaterialTheme.typography.titleMedium)
-                    Text(text = "Categorie: ${it.ct_naam}", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "Datum: ${it.dt_dag}-${it.dt_maand}-${it.dt_jaar}", style = MaterialTheme.typography.bodyMedium)
-                    Text(text = "Mededeling: ${it.tr_mededeling}", style = MaterialTheme.typography.bodyMedium)
+        Column(
+            modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Text(
+                text = transaction.tr_begunstigde,
+                style = MaterialTheme.typography.headlineMedium
+            )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "€ ${transaction.tr_bedrag}",
+                style = MaterialTheme.typography.titleLarge,
+                color = if (transaction.tr_bedrag < 0) Color(0xFFC62828) else Color(0xFF2E7D32)
+            )
 
-                    Row {
-                        Button(onClick = { }, modifier = Modifier.weight(1f)) {
-                            Text("Bewerken")
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Button(onClick = { }, modifier = Modifier.weight(1f), colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)) {
-                            Text("Verwijderen")
-                        }
-                    }
+            Text(text = "Categorie: ${transaction.ct_naam}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Datum: ${transaction.dt_dag}-${transaction.dt_maand}-${transaction.dt_jaar}", style = MaterialTheme.typography.bodyMedium)
+            Text(text = "Mededeling: ${transaction.tr_mededeling}", style = MaterialTheme.typography.bodyMedium)
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Button(
+                    onClick = { navController.navigate("transactionEdit") },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text("Bewerken")
                 }
-            } ?: Text(text = "Transactie niet gevonden", style = MaterialTheme.typography.headlineSmall)
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                Button(
+                    onClick = {},
+                    modifier = Modifier.weight(1f),
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
+                ) {
+                    Text("Verwijderen")
+                }
+            }
         }
     }
 }
