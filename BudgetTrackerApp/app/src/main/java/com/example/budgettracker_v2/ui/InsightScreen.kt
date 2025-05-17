@@ -8,10 +8,15 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun InsightScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("Inzichten")
+    Column {
+        Text(
+            text = "Highlights"
+        )
+        Text(
+            text = "Biggest transaction:"
+        )
+        Text(
+            text = "Average daily spending:"
+        )
     }
 }

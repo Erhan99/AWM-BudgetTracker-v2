@@ -5,6 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,6 +42,10 @@ import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import com.patrykandpatrick.vico.core.cartesian.data.columnSeries
 import java.time.LocalDate
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.MoneyOff
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 
 @Preview
 @Composable
@@ -57,36 +63,24 @@ fun HomeScreen(VM: TransactionViewModel = viewModel()) {
         ){
             Text(
                 text = stringResource(R.string.app_name),
-                fontSize = 30.sp
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold
             )
         }
         Spacer(
-            modifier = Modifier.padding(12.dp)
+            modifier = Modifier.padding(6.dp)
         )
         Row {
-            Text(
-                text = buildAnnotatedString {
-                    append(stringResource(R.string.inkomsten))
-                    withStyle(style = SpanStyle(color = Color(0xFF2E7D32))) {
-                        append(uiState.inkomstenHuidigeMaand.toString())
-                    }
-                },
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold
+            SpendingCard(
+                uiState.uitgavenHuidigeMaan.toString(),
+                Modifier.padding(16.dp).weight(1f)
             )
-            Spacer(modifier = Modifier.padding(6.dp))
-            Text(
-                text = buildAnnotatedString {
-                    append(stringResource(R.string.uitgaven))
-                    withStyle(style = SpanStyle(color = Color(0xFFC62828))) {
-                        append(uiState.uitgavenHuidigeMaan.toString())
-                    }
-                },
-                fontSize = 24.sp,
-                fontWeight = FontWeight.SemiBold,
+
+            IncomeCard(
+                uiState.inkomstenHuidigeMaand.toString(),
+                Modifier.padding(16.dp).weight(1f)
             )
         }
-        Spacer(modifier = Modifier.padding(vertical = 15.dp))
         Row (
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ){
@@ -119,27 +113,159 @@ fun HomeScreen(VM: TransactionViewModel = viewModel()) {
                 if (data.isEmpty()) {
                     Text(stringResource(R.string.geen_transactie_maand))
                 } else {
-                    Text(
-                        text = stringResource(R.string.bedrag_dag),
-                        fontSize = 18.sp,
-                    )
-                        val scrollState = rememberVicoScrollState()
-                        CartesianChartHost(
-                            rememberCartesianChart(
-                                rememberColumnCartesianLayer(),
-                                startAxis = VerticalAxis.rememberStart(
-                                    itemPlacer = remember { VerticalAxis.ItemPlacer.step( {_ -> 20.0}) },
-                                ),
-                                bottomAxis = HorizontalAxis.rememberBottom(),
-                            ),
-                            modelProducer,
-                            scrollState = scrollState
-                        )
+                    BedragPerDagChart(modelProducer)
 
                     CatPieChart( uiState.transactiesHuidigeMaand, uiState.uitgavenHuidigeMaan)
 
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun SpendingCard(Spending: String, modifier: Modifier = Modifier){
+    Card (
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(8.dp)
+    ){
+        Column (
+            modifier = Modifier.padding(16.dp)
+        ){
+            Row (
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .background(
+                            color = Color(0xFFFEE2E2),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.trending_down_24px),
+                        contentDescription = "Uitgaven",
+                        tint = Color(0xFFC62828),
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+                Spacer(
+                    modifier = Modifier.padding(6.dp)
+                )
+                Text(
+                    text = "Uitgaven",
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            Spacer(
+                modifier = Modifier.padding(6.dp)
+            )
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Icon(
+                    painter = painterResource(R.drawable.euro_24px),
+                    contentDescription = "Euro",
+                    tint = LocalContentColor.current,
+                    modifier = Modifier.size(18.dp)
+                )
+                Text(
+                    text = Spending,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun IncomeCard(Income: String, modifier: Modifier = Modifier){
+    Card (
+        modifier = modifier,
+        elevation = CardDefaults.cardElevation(8.dp)
+    ){
+        Column (
+            modifier = Modifier.padding(16.dp)
+        ){
+            Row (
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .background(
+                            color = Color(0xFFDBEAFE),
+                            shape = RoundedCornerShape(8.dp)
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.trending_up_24px),
+                        contentDescription = "Inkomen",
+                        tint = Color.Blue,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+                Spacer(
+                    modifier = Modifier.padding(5.dp)
+                )
+                Text(
+                    text = "Inkomen",
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+            Spacer(
+                modifier = Modifier.padding(5.dp)
+            )
+            Row (
+                verticalAlignment = Alignment.CenterVertically
+            ){
+                Icon(
+                    painter = painterResource(R.drawable.euro_24px),
+                    contentDescription = "Euro",
+                    tint = LocalContentColor.current,
+                    modifier = Modifier.size(18.dp)
+                )
+                Text(
+                    text = Income,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        }
+    }
+}
+@Composable
+fun BedragPerDagChart(modelProducer: CartesianChartModelProducer){
+    Card (
+        modifier = Modifier.padding(16.dp),
+        elevation = CardDefaults.cardElevation(8.dp)
+    ){
+        Column (
+            modifier = Modifier.padding(16.dp),
+        ){
+            Text(
+                text = stringResource(R.string.bedrag_dag),
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            val scrollState = rememberVicoScrollState()
+            CartesianChartHost(
+                rememberCartesianChart(
+                    rememberColumnCartesianLayer(),
+                    startAxis = VerticalAxis.rememberStart(
+                        itemPlacer = remember { VerticalAxis.ItemPlacer.step( {_ -> 20.0}) },
+                    ),
+                    bottomAxis = HorizontalAxis.rememberBottom(),
+                ),
+                modelProducer,
+                scrollState = scrollState
+            )
         }
     }
 }
@@ -172,14 +298,36 @@ fun CatPieChart(transactions: List<Transaction>?, uitgaven: Double) {
         chartColorsIndex++;
     }
 
-
-    Box(modifier = Modifier.size(300.dp)) {
-        PieChart(
-            data = { slices },
-            modifier = Modifier.matchParentSize(),
-            isDonutChart = false,
-            onPieChartSliceClick = { slice ->
-            }
+Card (
+    modifier = Modifier.padding(16.dp).fillMaxWidth(),
+    elevation = CardDefaults.cardElevation(8.dp)
+){
+    Column (
+        modifier = Modifier.padding(16.dp)
+    ){
+        Text(
+            text = "Verdeling van uitgaven",
+            fontSize = 18.sp,
+            fontWeight = FontWeight.SemiBold
         )
+        Row (
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+        ){
+            Box (
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                PieChart(
+                    data = { slices },
+                    modifier = Modifier.size(200.dp),
+                    isDonutChart = false,
+                    onPieChartSliceClick = { slice ->
+                    }
+                )
+
+            }
+        }
     }
+}
+
 }
