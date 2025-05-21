@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import kotlinx.coroutines.launch
 import android.util.Log
+import com.example.budgettracker_v2.repositories.transaction.PostTransactionDto
 import com.example.budgettracker_v2.viewmodels.state.TransactionUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -61,7 +62,7 @@ class TransactionViewModel : ViewModel(){
      fun postTransaction(){
         viewModelScope.launch {
             try{
-                val test = Transaction(tr_bedrag = 999.00, tr_mededeling = "testing post", tr_begunstigde = "testing post", tr_dt_id = 1, tr_bl_id = 1, tr_ct_id = 1)
+                val test = PostTransactionDto(tr_bedrag = 999.00, tr_mededeling = "testing post", tr_begunstigde = "testing post", tr_dt_id = 1, tr_bl_id = 1, tr_ct_id = 1)
                 val result = apiTransaction.postTransacties(test)
                 Log.d("api result", result.toString())
             }

@@ -18,8 +18,8 @@ interface ApiServiceDatum{
 
     @POST("datums/")
     suspend fun postDatums(
-        @Body datum: Datum
-    ): Response<Unit>
+        @Body datum: DatumPostRequestDto
+    ): Response<DatumPostResponseDto>
 
     @PUT("datums/")
     suspend fun updateDatums(

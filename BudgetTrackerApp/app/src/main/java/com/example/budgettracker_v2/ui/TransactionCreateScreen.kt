@@ -2,6 +2,7 @@ package com.example.budgettracker_v2.ui
 
 import android.app.DatePickerDialog
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -16,7 +17,9 @@ import com.example.budgettracker_v2.models.Categorie
 import com.example.budgettracker_v2.models.Datum
 import com.example.budgettracker_v2.models.Transaction
 import com.example.budgettracker_v2.repositories.categorie.apiCategory
+import com.example.budgettracker_v2.repositories.datum.DatumPostRequestDto
 import com.example.budgettracker_v2.repositories.datum.apiDatum
+import com.example.budgettracker_v2.repositories.transaction.PostTransactionDto
 import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -132,7 +135,7 @@ fun TransactionCreateScreen(navController: NavController) {
                         val dag = parts[2].toInt()
                         val maandNaam = getMaandNaam(maandNum)
                         val datumResponse = apiDatum.postDatums(
-                            Datum(
+                            DatumPostRequestDto(
                                 dt_datum = datum,
                                 dt_jaar = jaar,
                                 dt_maand = maandNaam,
@@ -145,24 +148,19 @@ fun TransactionCreateScreen(navController: NavController) {
                             return@launch
                         }
                         val datumData = datumResponse.body()
+                        Log.d("datumPost", datumResponse.body().toString())
                         if (datumData == null || datumData.dt_id == null) {
                             snackbarHostState.showSnackbar("Fout: Datum ID ontbreekt.")
                             return@launch
                         }
                         val datumId = datumData.dt_id
-                        val nieuweTransactie = Transaction(
+                        val nieuweTransactie = PostTransactionDto(
                             tr_bedrag = bedrag.toDouble(),
                             tr_mededeling = mededeling,
                             tr_begunstigde = begunstigde,
                             tr_dt_id = datumId,
                             tr_ct_id = selectedCategory!!.ct_id!!,
-                            tr_bl_id = 1,
-                            ct_naam = selectedCategory!!.ct_naam,
-                            dt_datum = datum,
-                            dt_dag = dag,
-                            dt_maand = maandNaam,
-                            dt_maand_num = maandNum,
-                            dt_jaar = jaar
+                            tr_bl_id = 1
                         )
                         val response = apiTransaction.postTransacties(nieuweTransactie)
                         if (response.isSuccessful) {
