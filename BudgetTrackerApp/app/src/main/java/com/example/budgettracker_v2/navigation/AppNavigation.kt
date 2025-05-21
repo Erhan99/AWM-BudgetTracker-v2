@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import com.example.budgettracker_v2.models.Transaction
 import com.example.budgettracker_v2.ui.HomeScreen
 import com.example.budgettracker_v2.ui.InsightScreen
+import com.example.budgettracker_v2.ui.TransactionCreateScreen
 import com.example.budgettracker_v2.ui.TransactionScreen
 import com.example.budgettracker_v2.ui.TransactionDetailsScreen
 import com.example.budgettracker_v2.ui.TransactionEditScreen
@@ -25,6 +26,9 @@ fun AppNavigation(navController: NavHostController) {
         }
         composable("transactionEdit") {
             TransactionEditScreen(navController = navController)
+        }
+        composable("transactionCreate") {
+            TransactionCreateScreen(navController = navController)
         }
     }
 }

@@ -13,16 +13,16 @@ fun NavBar(navController: NavController) {
     val currentRoute = navController.currentDestination?.route
     NavigationBar {
         NavigationBarItem(
-            icon = { Icon(Icons.Filled.List, contentDescription = "Transactions") },
-            label = { Text("Transacties") },
-            selected = currentRoute == "transactions",
-            onClick = { navController.navigate("transactions") }
-        )
-        NavigationBarItem(
             icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
             label = { Text("Home") },
             selected = currentRoute == "home",
             onClick = { navController.navigate("home") }
+        )
+        NavigationBarItem(
+            icon = { Icon(Icons.Filled.List, contentDescription = "Transactions") },
+            label = { Text("Transacties") },
+            selected = currentRoute == "transactions",
+            onClick = { navController.navigate("transactions") }
         )
         NavigationBarItem(
             icon = { Icon(Icons.Filled.Info, contentDescription = "Insights") },

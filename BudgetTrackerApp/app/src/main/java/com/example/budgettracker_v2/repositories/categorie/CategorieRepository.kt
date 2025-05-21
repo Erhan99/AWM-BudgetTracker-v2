@@ -13,7 +13,7 @@ import retrofit2.http.Query
 
 interface ApiServiceCategorie{
     @GET("categorieën/")
-    suspend fun getCategorieen(): ApiResponseKlanten
+    suspend fun getCategorieen(): ApiResponseCategorieen
 
     @POST("categorieën/")
     suspend fun postCategorieen(
