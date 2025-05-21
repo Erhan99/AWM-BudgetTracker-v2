@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -40,65 +41,75 @@ import kotlin.math.exp
 
 @Composable
 fun TransactionScreen(navController: NavController, VM: TransactionViewModel = viewModel()) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        val uiState by VM.uiState.collectAsState()
-        val listState = rememberLazyListState()
-        val items = remember { mutableStateListOf<Transaction>() }
-        val currentOffset = remember { mutableStateOf(0) }
-        val isLoading = remember { mutableStateOf(false) }
-
-        LaunchedEffect(Unit) {
-            VM.getTransactions("4")
-        }
-
-        LaunchedEffect(uiState.transactions) {
-            uiState.transactions?.let {
-                if (items.isEmpty()) {
-                    val initialChunk = it.take(5)
-                    items.addAll(initialChunk)
-                    currentOffset.value = initialChunk.size
-                }
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = { navController.navigate("transactionCreate") },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Nieuwe transactie")
             }
         }
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
+            contentAlignment = Alignment.Center
+        ) {
+            val uiState by VM.uiState.collectAsState()
+            val listState = rememberLazyListState()
+            val items = remember { mutableStateListOf<Transaction>() }
+            val currentOffset = remember { mutableStateOf(0) }
+            val isLoading = remember { mutableStateOf(false) }
 
-        LaunchedEffect(Unit) {
-            snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
-                .collect { lastVisibleIndex ->
-                    if (lastVisibleIndex == items.size - 1) {
-                        uiState.transactions?.let { allTransactions ->
-                            val nextChunk = allTransactions
-                                .drop(currentOffset.value)
-                                .take(5)
-                            if (nextChunk.isNotEmpty()) {
-                                items.addAll(nextChunk)
-                                currentOffset.value += nextChunk.size
-                                isLoading.value = true
-                            }
-                            else{
-                                isLoading.value = false
+            LaunchedEffect(Unit) {
+                VM.getTransactions("4")
+            }
+
+            LaunchedEffect(uiState.transactions) {
+                uiState.transactions?.let {
+                    if (items.isEmpty()) {
+                        val initialChunk = it.take(5)
+                        items.addAll(initialChunk)
+                        currentOffset.value = initialChunk.size
+                    }
+                }
+            }
+
+            LaunchedEffect(Unit) {
+                snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+                    .collect { lastVisibleIndex ->
+                        if (lastVisibleIndex == items.size - 1) {
+                            uiState.transactions?.let { allTransactions ->
+                                val nextChunk = allTransactions
+                                    .drop(currentOffset.value)
+                                    .take(5)
+                                if (nextChunk.isNotEmpty()) {
+                                    items.addAll(nextChunk)
+                                    currentOffset.value += nextChunk.size
+                                    isLoading.value = true
+                                } else {
+                                    isLoading.value = false
+                                }
                             }
                         }
                     }
-                }
-        }
-        Column (
-            modifier = Modifier.fillMaxWidth()
-        ){
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center
-            ){
-                Text(
-                    text = "Transactions",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold,
-
-                )
             }
-            TransactionList(transactions = items, listState, isLoading.value, navController)
+            Column(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Transactions",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+
+                        )
+                }
+                TransactionList(transactions = items, listState, isLoading.value, navController)
+            }
         }
     }
 }
