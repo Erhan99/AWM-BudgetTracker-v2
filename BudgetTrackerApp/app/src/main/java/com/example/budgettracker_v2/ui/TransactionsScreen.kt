@@ -173,7 +173,7 @@ fun TransactionCard(modifier: Modifier = Modifier, transaction: Transaction, nav
                         text = price,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if(transaction.tr_bedrag < 0) Color(0xFFC62828) else Color(0xFF2E7D32)
+                        color = if(transaction.tr_bedrag < 0) Color(0xFFF33535) else Color(0xFF2E7D32)
                     )
                     Text(
                         modifier = Modifier.padding(vertical = 3.dp),

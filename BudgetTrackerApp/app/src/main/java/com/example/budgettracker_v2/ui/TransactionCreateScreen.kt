@@ -144,7 +144,12 @@ fun TransactionCreateScreen(navController: NavController) {
                             snackbarHostState.showSnackbar("Datum aanmaken mislukt.")
                             return@launch
                         }
-                        val datumId = datumResponse.body()!!.dt_id!!
+                        val datumData = datumResponse.body()
+                        if (datumData == null || datumData.dt_id == null) {
+                            snackbarHostState.showSnackbar("Fout: Datum ID ontbreekt.")
+                            return@launch
+                        }
+                        val datumId = datumData.dt_id
                         val nieuweTransactie = Transaction(
                             tr_bedrag = bedrag.toDouble(),
                             tr_mededeling = mededeling,
