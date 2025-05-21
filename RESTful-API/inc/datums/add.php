@@ -17,5 +17,5 @@ if($conn->affected_rows == 0) {
 $stmt -> close();
 
 $dt_id = $conn -> insert_id;
-die('{"data":"ok","message":"Record added successfully","status":200, "bk_code": ' . $dt_id . '}');
+die('{"data":"ok","message":"Record added successfully","status":200, "dt_id": ' . $dt_id . '}');
 ?>

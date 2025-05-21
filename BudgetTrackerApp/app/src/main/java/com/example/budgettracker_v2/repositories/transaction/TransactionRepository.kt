@@ -21,7 +21,7 @@ interface ApiServiceTransaction{
 
     @POST("transacties/")
     suspend fun postTransacties(
-        @Body transaction: Transaction
+        @Body transaction: PostTransactionDto
     ): Response<Unit>
 
     @PUT("transacties/")
