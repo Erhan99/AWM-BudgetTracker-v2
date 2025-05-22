@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.budgettracker_v2.navigation.AppNavigation
 import com.example.budgettracker_v2.ui.BudgetTrackerApp
 import com.example.budgettracker_v2.ui.NavBar
+import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.example.compose.BudgetTrackerTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,6 +29,24 @@ class MainActivity : ComponentActivity() {
             BudgetTrackerTheme {
                 BudgetTrackerApp()
             }
+        }
+    }
+}
+
+@Composable
+fun BudgetTrackerApp(loginViewModel: LoginViewModel = viewModel()) {
+    val navController = rememberNavController()
+    val isLoggedIn = loginViewModel.isLoggedIn.value
+
+    Scaffold(
+        bottomBar = {
+            if (isLoggedIn) {
+                NavBar(navController = navController)
+            }
+        }
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            AppNavigation(navController = navController, loginViewModel = loginViewModel)
         }
     }
 }
