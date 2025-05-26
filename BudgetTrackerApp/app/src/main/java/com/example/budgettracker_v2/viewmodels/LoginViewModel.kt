@@ -21,4 +21,7 @@ class LoginViewModel : ViewModel() {
             onResult(isValidUser)
         }
     }
+    fun logout() {
+        _isLoggedIn.value = false
+    }
 }

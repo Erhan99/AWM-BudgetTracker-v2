@@ -35,12 +35,13 @@ import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import java.time.LocalDate
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 
-@Preview
+
 @Composable
-fun HomeScreen(VM: TransactionViewModel = viewModel()) {
+fun HomeScreen(navController: NavController, VM: TransactionViewModel = viewModel()) {
     Column (
         modifier = Modifier.padding(6.dp)
     ) {
@@ -110,6 +111,23 @@ fun HomeScreen(VM: TransactionViewModel = viewModel()) {
 
                 }
             }
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Button(
+            onClick = { navController.navigate("transactionCreate") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(0.dp),
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+        ) {
+            Text(
+                text = "Create",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
         }
     }
 }
@@ -289,36 +307,36 @@ fun CatPieChart(transactions: List<Transaction>?, uitgaven: Double) {
         chartColorsIndex++;
     }
 
-Card (
-    modifier = Modifier.padding(16.dp).fillMaxWidth(),
-    elevation = CardDefaults.cardElevation(8.dp)
-){
-    Column (
-        modifier = Modifier.padding(16.dp)
+    Card (
+        modifier = Modifier.padding(16.dp).fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(8.dp)
     ){
-        Text(
-            text = "Verdeling van uitgaven",
-            fontSize = 18.sp,
-            fontWeight = FontWeight.SemiBold
-        )
-        Row (
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+        Column (
+            modifier = Modifier.padding(16.dp)
         ){
-            Box (
-                modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
-            ) {
-                PieChart(
-                    data = { slices },
-                    modifier = Modifier.size(200.dp),
-                    isDonutChart = false,
-                    onPieChartSliceClick = { slice ->
-                    }
-                )
+            Text(
+                text = "Verdeling van uitgaven",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+            Row (
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            ){
+                Box (
+                    modifier = Modifier.fillMaxWidth(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    PieChart(
+                        data = { slices },
+                        modifier = Modifier.size(200.dp),
+                        isDonutChart = false,
+                        onPieChartSliceClick = { slice ->
+                        }
+                    )
 
+                }
             }
         }
     }
-}
 
 }

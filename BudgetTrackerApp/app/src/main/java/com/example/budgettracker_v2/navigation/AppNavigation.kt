@@ -20,7 +20,7 @@ import com.google.gson.Gson
 fun AppNavigation(navController: NavHostController, loginViewModel: LoginViewModel = viewModel()) {
     NavHost(navController, startDestination = if (loginViewModel.isLoggedIn.value) "home" else "login") {
         composable("login") { LoginScreen(navController, loginViewModel) }
-        composable("home") { HomeScreen() }
+        composable("home") { HomeScreen(navController) }
         composable(route = "transactions") { TransactionScreen(navController = navController) }
         composable("insights") { InsightScreen() }
         composable("transactionDetails/{transactionJson}") { backStackEntry ->
