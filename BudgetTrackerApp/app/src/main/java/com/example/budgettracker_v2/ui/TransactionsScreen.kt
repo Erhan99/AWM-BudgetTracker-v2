@@ -34,13 +34,15 @@ import androidx.navigation.NavController
 import com.example.budgettracker_v2.R
 import com.example.budgettracker_v2.models.Categorie
 import com.example.budgettracker_v2.models.Transaction
+import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
 import com.google.gson.Gson
 import kotlin.math.abs
 import kotlin.math.exp
 
 @Composable
-fun TransactionScreen(navController: NavController, VM: TransactionViewModel = viewModel()) {
+fun TransactionScreen(navController: NavController, VM: TransactionViewModel = viewModel(), loginVM: LoginViewModel = viewModel()) {
+    val userId by loginVM.userId.collectAsState()
     Scaffold(
         floatingActionButton = {
             FloatingActionButton(
@@ -62,7 +64,7 @@ fun TransactionScreen(navController: NavController, VM: TransactionViewModel = v
             val isLoading = remember { mutableStateOf(false) }
 
             LaunchedEffect(Unit) {
-                VM.getTransactions("4")
+                userId?.let { VM.getTransactions(it) }
             }
 
             LaunchedEffect(uiState.transactions) {
