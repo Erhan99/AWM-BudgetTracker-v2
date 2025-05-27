@@ -1,40 +1,55 @@
 package com.example.budgettracker_v2.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import com.example.budgettracker_v2.repositories.klant.apiKlant
+import com.example.budgettracker_v2.viewmodels.state.LoginUIState
+import com.example.budgettracker_v2.viewmodels.state.TransactionUIState
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
-    private val _isLoggedIn = mutableStateOf(false)
-    val isLoggedIn: State<Boolean> get() = _isLoggedIn
-    private val _userId = MutableStateFlow<String?>(null)
-    val userId = _userId.asStateFlow()
-
-    fun setUserId(id: String) {
-        _userId.value = id
-    }
+    private val _uiState = MutableStateFlow(LoginUIState())
+    val uiState: StateFlow<LoginUIState> = _uiState.asStateFlow()
 
     fun login(email: String, password: String, onResult: (Boolean) -> Unit) {
         viewModelScope.launch {
             val response = apiKlant.getKlanten()
             val user = response.data.find { it.kl_email == email && it.kl_wachtwoord == password }
-
             if (user != null) {
-                _isLoggedIn.value = true
-                _userId.value = user.kl_id.toString()
+                _uiState.update {
+                    currentState ->
+                    currentState.copy(
+                        isLoggedIn = true,
+                        userId = user.kl_id
+                    )
+                }
                 onResult(true)
             } else {
-                _isLoggedIn.value = false
+                _uiState.update {
+                        currentState ->
+                    currentState.copy(
+                        isLoggedIn = false,
+                        userId = -1
+                    )
+                }
                 onResult(false)
             }
         }
     }
     fun logout() {
-        _isLoggedIn.value = false
+        _uiState.update {
+                currentState ->
+            currentState.copy(
+                isLoggedIn = false,
+                userId = -1
+            )
+        }
     }
 }

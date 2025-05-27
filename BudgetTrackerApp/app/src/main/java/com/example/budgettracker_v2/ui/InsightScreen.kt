@@ -9,7 +9,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -17,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.budgettracker_v2.R
+import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
@@ -34,11 +34,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun InsightScreen(VM: TransactionViewModel = viewModel()) {
+fun InsightScreen(VM: TransactionViewModel = viewModel(), loginViewModel: LoginViewModel = viewModel()) {
     val uiState by VM.uiState.collectAsState()
+    val loginState by loginViewModel.uiState.collectAsState()
     Column {
         LaunchedEffect(Unit) {
-            VM.getTransactions("4")
+            VM.getTransactions(loginState.userId.toString())
         }
 
         val modelProducer = remember { CartesianChartModelProducer() }
@@ -142,7 +143,7 @@ fun InsightScreen(VM: TransactionViewModel = viewModel()) {
             BedragChart(modelProducer2, dataMaandBedrag, dataJaarBedrag, data7DaysBedrag)
         }
         else{
-            Text(text = "No recent transactions found")
+            Text(text = "No recent transactions found in the last 7 days")
         }
     }
 }

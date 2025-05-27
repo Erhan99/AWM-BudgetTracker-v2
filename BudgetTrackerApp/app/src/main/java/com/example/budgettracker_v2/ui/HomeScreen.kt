@@ -43,15 +43,28 @@ import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 
 @Composable
 fun HomeScreen(navController: NavController, VM: TransactionViewModel = viewModel(), loginVM: LoginViewModel = viewModel()) {
-    val userId by loginVM.userId.collectAsState()
     Column (
         modifier = Modifier.padding(6.dp)
     ) {
         val uiState by VM.uiState.collectAsState()
+        val loginState by loginVM.uiState.collectAsState()
 
         LaunchedEffect(Unit) {
-            userId?.let { VM.getTransactions(it) }
+            VM.getTransactions(loginState.userId.toString())
         }
+
+        val transactiesMaand = uiState.transactions.orEmpty().filter{ t ->
+            t.dt_maand_num == LocalDate.now().monthValue && t.dt_jaar == LocalDate.now().year
+        }
+
+        val uitgaven = uiState.transactions.orEmpty().filter{ t ->
+            t.tr_bedrag < 0.0 && t.dt_maand_num == LocalDate.now().monthValue && t.dt_jaar == LocalDate.now().year
+        }.sumOf { it.tr_bedrag }
+
+        val imkomsten = uiState.transactions.orEmpty().filter{ t ->
+            t.tr_bedrag > 0.0 && t.dt_maand_num == LocalDate.now().monthValue && t.dt_jaar == LocalDate.now().year
+        }.sumOf { it.tr_bedrag }
+
         Row (
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ){
@@ -65,13 +78,14 @@ fun HomeScreen(navController: NavController, VM: TransactionViewModel = viewMode
             modifier = Modifier.padding(6.dp)
         )
         Row {
+
             SpendingCard(
-                uiState.uitgavenHuidigeMaan.toString(),
+                uitgaven.toString(),
                 Modifier.padding(16.dp).weight(1f)
             )
 
             IncomeCard(
-                uiState.inkomstenHuidigeMaand.toString(),
+                imkomsten.toString(),
                 Modifier.padding(16.dp).weight(1f)
             )
         }
@@ -81,7 +95,7 @@ fun HomeScreen(navController: NavController, VM: TransactionViewModel = viewMode
             Column {
                 val modelProducer = remember { CartesianChartModelProducer() }
 
-                val data: Map<Int, Double> = uiState.transactiesHuidigeMaand
+                val data: Map<Int, Double> = transactiesMaand
                     ?.groupBy { it.dt_dag }
                     ?.mapValues { (_, t) ->
                         t.sumOf { it.tr_bedrag }
@@ -109,7 +123,7 @@ fun HomeScreen(navController: NavController, VM: TransactionViewModel = viewMode
                 } else {
                     BedragPerDagChart(modelProducer)
 
-                    CatPieChart( uiState.transactiesHuidigeMaand, uiState.uitgavenHuidigeMaan)
+                    CatPieChart( transactiesMaand, uitgaven)
 
                 }
             }

@@ -26,28 +26,10 @@ class TransactionViewModel : ViewModel(){
         viewModelScope.launch {
             try{
                 val result = apiTransaction.geTransactiesByUser(user)
-                Log.d("api result", result.toString())
-
-
-                val transactionsMaand = result.data.filter{ t ->
-                    t.dt_maand_num == LocalDate.now().monthValue && t.dt_jaar == LocalDate.now().year
-                }
-
-                val inkomsten = result.data.filter{ t ->
-                    t.tr_bedrag > 0.0 && t.dt_maand_num == LocalDate.now().monthValue && t.dt_jaar == LocalDate.now().year
-                }.sumOf { it.tr_bedrag }
-                Log.d("inkomsten", inkomsten.toString())
-
-                val uitgaven = result.data.filter{ t ->
-                    t.tr_bedrag < 0.0 && t.dt_maand_num == LocalDate.now().monthValue && t.dt_jaar == LocalDate.now().year
-                }.sumOf { it.tr_bedrag }
 
                 _uiState.update { currentState ->
                     currentState.copy(
-                        transactions = result.data,
-                        transactiesHuidigeMaand = transactionsMaand,
-                        inkomstenHuidigeMaand = inkomsten,
-                        uitgavenHuidigeMaan = uitgaven
+                        transactions = result.data
                     )
                 }
             }
