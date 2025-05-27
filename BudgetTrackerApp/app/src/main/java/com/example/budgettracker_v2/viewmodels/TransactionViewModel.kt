@@ -26,10 +26,10 @@ class TransactionViewModel : ViewModel(){
         viewModelScope.launch {
             try{
                 val result = apiTransaction.geTransactiesByUser(user)
-
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
                 _uiState.update { currentState ->
                     currentState.copy(
-                        transactions = result.data
+                        transactions = result.data.sortedByDescending { t ->  LocalDate.parse(t.dt_datum, formatter) }
                     )
                 }
             }
