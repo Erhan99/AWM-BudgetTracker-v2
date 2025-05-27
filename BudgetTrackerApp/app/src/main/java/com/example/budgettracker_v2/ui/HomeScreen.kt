@@ -36,19 +36,21 @@ import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
 import java.time.LocalDate
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
+import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 
 
 @Composable
-fun HomeScreen(navController: NavController, VM: TransactionViewModel = viewModel()) {
+fun HomeScreen(navController: NavController, VM: TransactionViewModel = viewModel(), loginVM: LoginViewModel = viewModel()) {
+    val userId by loginVM.userId.collectAsState()
     Column (
         modifier = Modifier.padding(6.dp)
     ) {
         val uiState by VM.uiState.collectAsState()
 
         LaunchedEffect(Unit) {
-            VM.getTransactions("4")
+            userId?.let { VM.getTransactions(it) }
         }
         Row (
             modifier = Modifier.align(Alignment.CenterHorizontally)
