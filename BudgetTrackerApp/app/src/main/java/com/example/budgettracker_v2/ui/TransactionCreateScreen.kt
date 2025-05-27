@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.budgettracker_v2.models.Categorie
 import com.example.budgettracker_v2.models.Datum
@@ -21,13 +22,16 @@ import com.example.budgettracker_v2.repositories.datum.DatumPostRequestDto
 import com.example.budgettracker_v2.repositories.datum.apiDatum
 import com.example.budgettracker_v2.repositories.transaction.PostTransactionDto
 import com.example.budgettracker_v2.repositories.transaction.apiTransaction
+import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionCreateScreen(navController: NavController) {
+fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewModel = viewModel()) {
+    val loginState by loginVM.uiState.collectAsState()
+
     val coroutineScope = rememberCoroutineScope()
     var begunstigde by remember { mutableStateOf("") }
     var bedrag by remember { mutableStateOf("") }
@@ -154,19 +158,23 @@ fun TransactionCreateScreen(navController: NavController) {
                             return@launch
                         }
                         val datumId = datumData.dt_id
-                        val nieuweTransactie = PostTransactionDto(
-                            tr_bedrag = bedrag.toDouble(),
-                            tr_mededeling = mededeling,
-                            tr_begunstigde = begunstigde,
-                            tr_dt_id = datumId,
-                            tr_ct_id = selectedCategory!!.ct_id!!,
-                            tr_bl_id = 1
-                        )
-                        val response = apiTransaction.postTransacties(nieuweTransactie)
-                        if (response.isSuccessful) {
-                            navController.popBackStack()
-                        } else {
-                            snackbarHostState.showSnackbar("Fout bij aanmaken transactie.")
+                        val nieuweTransactie = loginState.balansId?.let {
+                            PostTransactionDto(
+                                tr_bedrag = bedrag.toDouble(),
+                                tr_mededeling = mededeling,
+                                tr_begunstigde = begunstigde,
+                                tr_dt_id = datumId,
+                                tr_ct_id = selectedCategory!!.ct_id!!,
+                                tr_bl_id = it
+                            )
+                        }
+                        if (nieuweTransactie != null) {
+                            val response = apiTransaction.postTransacties(nieuweTransactie)
+                            if (response.isSuccessful) {
+                                navController.popBackStack()
+                            } else {
+                                snackbarHostState.showSnackbar("Fout bij aanmaken transactie.")
+                            }
                         }
                     }
                 },

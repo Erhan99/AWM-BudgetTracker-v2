@@ -6,5 +6,6 @@ data class Klant (
     val kl_voornaam: String,
     val kl_email: String,
     val kl_wachtwoord: String,
-    val kl_isAdmin: Boolean
+    val kl_isAdmin: Boolean,
+    val bl_id: Int
 )

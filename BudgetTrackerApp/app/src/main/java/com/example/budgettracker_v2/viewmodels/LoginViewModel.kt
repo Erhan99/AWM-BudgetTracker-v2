@@ -27,7 +27,8 @@ class LoginViewModel : ViewModel() {
                     currentState ->
                     currentState.copy(
                         isLoggedIn = true,
-                        userId = user.kl_id
+                        userId = user.kl_id,
+                        balansId = user.bl_id
                     )
                 }
                 onResult(true)
