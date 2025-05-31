@@ -3,7 +3,9 @@ package com.example.budgettracker_v2.ui
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,8 +45,9 @@ import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 
 @Composable
 fun HomeScreen(navController: NavController, VM: TransactionViewModel = viewModel(), loginVM: LoginViewModel = viewModel()) {
+    val mainScrollState = rememberScrollState()
     Column (
-        modifier = Modifier.padding(6.dp)
+        modifier = Modifier.padding(6.dp).verticalScroll(mainScrollState)
     ) {
         val uiState by VM.uiState.collectAsState()
         val loginState by loginVM.uiState.collectAsState()
@@ -128,21 +131,24 @@ fun HomeScreen(navController: NavController, VM: TransactionViewModel = viewMode
                 }
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
 
         Button(
             onClick = { navController.navigate("transactionCreate") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(0.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primary)
+                .padding(3.dp),
+            shape = RoundedCornerShape(8.dp)
         ) {
+            Icon(
+                painter = painterResource(R.drawable.add_circle_24px),
+                contentDescription = "add",
+                tint = LocalContentColor.current,
+                modifier = Modifier.size(18.dp)
+            )
             Text(
-                text = "Create",
+                text = "Nieuwe Transactie",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                fontWeight = FontWeight.Bold
             )
         }
     }

@@ -1,8 +1,15 @@
 package com.example.budgettracker_v2.ui
 
 import android.util.Log
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -10,12 +17,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.budgettracker_v2.R
 import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
@@ -261,7 +266,7 @@ fun BedragPerCategorieChart(modelProducer: CartesianChartModelProducer, dataMaan
                             valueFormatter = { _, value, _ ->
                                 labels.value.getOrNull(value.toInt()) ?: value.toString()
                             }
-                        ),
+                        )
                     ),
                     modelProducer,
                     scrollState = scrollState
@@ -317,7 +322,7 @@ fun BedragChart(modelProducer: CartesianChartModelProducer, dataMaand: List<Doub
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = stringResource(R.string.bedrag_dag),
+                    text = "totaal bedrag per periode",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.SemiBold
                 )
