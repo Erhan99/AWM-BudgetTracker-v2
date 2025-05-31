@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.*
@@ -11,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -79,9 +81,14 @@ fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewMode
             )
             OutlinedTextField(
                 value = bedrag,
-                onValueChange = { bedrag = it },
+                onValueChange = { newValue ->
+                    if (newValue.all { it.isDigit() }) {
+                        bedrag = newValue
+                    }
+                },
                 label = { Text("Bedrag (€)") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
             ExposedDropdownMenuBox(
                 expanded = expanded,
@@ -171,7 +178,7 @@ fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewMode
                         if (nieuweTransactie != null) {
                             val response = apiTransaction.postTransacties(nieuweTransactie)
                             if (response.isSuccessful) {
-                                navController.popBackStack()
+                                navController.navigate("transactions")
                             } else {
                                 snackbarHostState.showSnackbar("Fout bij aanmaken transactie.")
                             }
