@@ -1,11 +1,15 @@
 package com.example.budgettracker_v2.ui
 
 import android.util.Log
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedButton
@@ -24,12 +28,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
+import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberBottom
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberStart
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberColumnCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.cartesian.rememberVicoScrollState
+import com.patrykandpatrick.vico.core.cartesian.axis.BaseAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.HorizontalAxis
 import com.patrykandpatrick.vico.core.cartesian.axis.VerticalAxis
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
@@ -251,13 +257,11 @@ fun BedragPerCategorieChart(modelProducer: CartesianChartModelProducer, dataMaan
                     )
                 }
             }
-            val scrollState = rememberVicoScrollState()
-
                 CartesianChartHost(
                     rememberCartesianChart(
                         rememberColumnCartesianLayer(),
                         startAxis = VerticalAxis.rememberStart(
-                            itemPlacer = remember { VerticalAxis.ItemPlacer.step( { _ -> 20.0}) },
+                            itemPlacer = remember { VerticalAxis.ItemPlacer.step({ _ -> 20.0 }) },
                         ),
                         bottomAxis = HorizontalAxis.rememberBottom(
                             itemPlacer = remember {
@@ -265,13 +269,17 @@ fun BedragPerCategorieChart(modelProducer: CartesianChartModelProducer, dataMaan
                             },
                             valueFormatter = { _, value, _ ->
                                 labels.value.getOrNull(value.toInt()) ?: value.toString()
-                            }
+                            },
+                            labelRotationDegrees = 45f,
+                            label = rememberAxisLabelComponent(
+                                textSize = 10.sp
+                            )
                         )
                     ),
                     modelProducer,
-                    scrollState = scrollState
+                    scrollState = rememberVicoScrollState(),
                 )
-        }
+            }
     }
 }
 
@@ -283,7 +291,7 @@ fun BedragChart(modelProducer: CartesianChartModelProducer, dataMaand: List<Doub
             modelProducer.runTransaction {
                 lineSeries {
                     val values = when (selectedPeriod.value) {
-                        "7dagen" -> {
+                        "Week" -> {
                             data7Days
                         }
 
@@ -338,7 +346,7 @@ fun BedragChart(modelProducer: CartesianChartModelProducer, dataMaand: List<Doub
                     modifier = Modifier.padding(end = 6.dp)
                 ) {
                     Text(
-                        text = "7 dagen"
+                        text = "Week"
                     )
                 }
 

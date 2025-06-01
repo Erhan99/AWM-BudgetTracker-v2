@@ -1,21 +1,16 @@
 package com.example.budgettracker_v2.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.example.budgettracker_v2.models.Transaction
 import androidx.lifecycle.viewModelScope
 import com.example.budgettracker_v2.repositories.transaction.apiTransaction
-import kotlinx.coroutines.launch
-import android.util.Log
-import com.example.budgettracker_v2.repositories.transaction.PostTransactionDto
 import com.example.budgettracker_v2.viewmodels.state.TransactionUIState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.time.LocalDate
-import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 
 class TransactionViewModel : ViewModel(){
@@ -40,18 +35,46 @@ class TransactionViewModel : ViewModel(){
         }
     }
 
-    //functie niet compleet, gemaakt om te testen
-     fun postTransaction(){
+    fun filterTransactions(
+        ct_id: Int? = null,
+        begunstigde: String? = null,
+        periode: String? = null,
+        minBedrag: Double? = null,
+        maxBedrag: Double? = null
+    ) {
         viewModelScope.launch {
-            try{
-                val test = PostTransactionDto(tr_bedrag = 999.00, tr_mededeling = "testing post", tr_begunstigde = "testing post", tr_dt_id = 1, tr_bl_id = 1, tr_ct_id = 1)
-                val result = apiTransaction.postTransacties(test)
-                Log.d("api result", result.toString())
-            }
-            catch (e: Exception){
-                Log.d("api","api post related problem: " + e)
-            }
+            try {
+                val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                val today = LocalDate.now()
 
+                val periodStart = when (periode) {
+                    "Week" -> today.minusWeeks(1)
+                    "Maand" -> today.minusMonths(1)
+                    "Jaar" -> today.minusYears(1)
+                    else -> null
+                }
+
+                _uiState.update { currentState ->
+                    val filtered = currentState.transactions?.filter { t ->
+                        val ctMatch = ct_id == null || t.tr_ct_id == ct_id
+                        val begunstigdeMatch = begunstigde.isNullOrBlank() || t.tr_begunstigde.contains(begunstigde, ignoreCase = true)
+                        val transactionDate = LocalDate.parse(t.dt_datum, formatter)
+                        val dateMatch = periodStart == null || !transactionDate.isBefore(periodStart)
+
+                        val bedrag = t.tr_bedrag
+                        val minMatch = minBedrag == null || bedrag >= minBedrag
+                        val maxMatch = maxBedrag == null || bedrag <= maxBedrag
+
+                        ctMatch && begunstigdeMatch && dateMatch && minMatch && maxMatch
+                    }?.sortedByDescending { t ->
+                        LocalDate.parse(t.dt_datum, formatter)
+                    }
+
+                    currentState.copy(transactions = filtered)
+                }
+            } catch (e: Exception) {
+                Log.d("api", "api related problem: $e")
+            }
         }
     }
 }
