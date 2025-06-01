@@ -15,6 +15,7 @@ import com.example.budgettracker_v2.ui.TransactionCreateScreen
 import com.example.budgettracker_v2.ui.TransactionScreen
 import com.example.budgettracker_v2.ui.TransactionDetailsScreen
 import com.example.budgettracker_v2.ui.TransactionEditScreen
+import com.example.budgettracker_v2.ui.TransactionFilterScreen
 import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
 import com.google.gson.Gson
@@ -22,13 +23,13 @@ import com.google.gson.Gson
 @Composable
 fun AppNavigation(navController: NavHostController, loginViewModel: LoginViewModel = viewModel()) {
     val loginState by loginViewModel.uiState.collectAsState()
-
+    val TransactionVM: TransactionViewModel = viewModel()
     NavHost(navController, startDestination = if (loginState.isLoggedIn) "home" else "login") {
         composable("login") { LoginScreen(navController, loginViewModel) }
 
         composable("home") { HomeScreen(navController, loginVM = loginViewModel) }
 
-        composable(route = "transactions") { TransactionScreen(navController = navController, loginVM = loginViewModel) }
+        composable(route = "transactions") { TransactionScreen(navController = navController, loginVM = loginViewModel, VM = TransactionVM) }
 
         composable("insights") { InsightScreen(loginViewModel = loginViewModel) }
 
@@ -45,6 +46,8 @@ fun AppNavigation(navController: NavHostController, loginViewModel: LoginViewMod
         composable("transactionCreate") {
             TransactionCreateScreen(navController = navController, loginVM = loginViewModel)
         }
-
+        composable("transactionFilter") {
+            TransactionFilterScreen(navController = navController, loginVM = loginViewModel, VM = TransactionVM)
+        }
     }
 }
