@@ -8,3 +8,9 @@ data class ApiResponseKlanten(
     val data: List<Klant>
 )
 
+data class CreateKlantResponse(
+    val data: String,
+    val message: String,
+    val status: Int,
+    val bk_code: Int
+)

@@ -19,7 +19,7 @@ interface ApiServiceKlant{
     @POST("klanten/")
     suspend fun postKlanten(
         @Body klant: Klant
-    ): Response<Unit>
+    ): Response<CreateKlantResponse>
 
     @PUT("klanten/")
     suspend fun updateKlanten(
