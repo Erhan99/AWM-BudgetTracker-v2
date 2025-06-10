@@ -13,6 +13,7 @@ import com.example.budgettracker_v2.viewmodels.TransactionViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import com.example.budgettracker_v2.models.Transaction
+import com.google.gson.Gson
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +53,10 @@ fun TransactionDetailsScreen(transaction: Transaction, navController: NavControl
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Button(
-                    onClick = { navController.navigate("transactionEdit") },
+                    onClick = {
+                        val transactionJson = Gson().toJson(transaction)
+                        navController.navigate("transactionEdit/$transactionJson")
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Bewerken")

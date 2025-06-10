@@ -43,8 +43,15 @@ fun AppNavigation(navController: NavHostController, loginViewModel: LoginViewMod
             TransactionDetailsScreen(transaction = transaction, navController = navController)
         }
 
-        composable("transactionEdit") {
-            TransactionEditScreen(navController = navController)
+        composable("transactionEdit/{transactionJson}") { backStackEntry ->
+            val transactionJson = backStackEntry.arguments?.getString("transactionJson")
+            val transaction = Gson().fromJson(transactionJson, Transaction::class.java)
+            TransactionEditScreen(
+                navController = navController,
+                transaction = transaction,
+                loginVM = loginViewModel,
+                transactionVM = TransactionVM
+            )
         }
 
         composable("transactionCreate") {

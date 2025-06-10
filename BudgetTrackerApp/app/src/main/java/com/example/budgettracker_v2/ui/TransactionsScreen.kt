@@ -241,7 +241,8 @@ fun TransactionDropDownMenu(expanded: MutableState<Boolean>, transaction: Transa
             DropdownMenuItem(
                 onClick = {
                     expanded.value = false
-                    navController.navigate("transactionEdit")
+                    val transactionJson = Gson().toJson(transaction)
+                    navController.navigate("transactionEdit/$transactionJson")
                 },
                 text = { Text("Bewerken") }
             )
