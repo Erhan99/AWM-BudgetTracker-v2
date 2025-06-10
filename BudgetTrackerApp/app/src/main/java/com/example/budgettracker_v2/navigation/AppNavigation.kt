@@ -55,7 +55,7 @@ fun AppNavigation(navController: NavHostController, loginViewModel: LoginViewMod
         }
 
         composable("transactionCreate") {
-            TransactionCreateScreen(navController = navController, loginVM = loginViewModel)
+            TransactionCreateScreen(navController = navController, loginVM = loginViewModel, VM = TransactionVM)
         }
         composable("transactionFilter") {
             TransactionFilterScreen(navController = navController, loginVM = loginViewModel, VM = TransactionVM)

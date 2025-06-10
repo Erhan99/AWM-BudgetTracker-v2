@@ -52,7 +52,6 @@ import kotlinx.coroutines.launch
 @Composable
 fun TransactionFilterScreen(navController: NavController, loginVM: LoginViewModel = viewModel(), VM: TransactionViewModel = viewModel()) {
     val loginState by loginVM.uiState.collectAsState()
-    val uiState by VM.uiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
     var begunstigde by remember { mutableStateOf("") }
     var selectedPeriod by remember { mutableStateOf("") }
@@ -106,7 +105,7 @@ fun TransactionFilterScreen(navController: NavController, loginVM: LoginViewMode
                 OutlinedTextField(
                     value = minBedrag,
                     onValueChange = { newValue ->
-                        if (newValue.all { it.isDigit() }) {
+                        if (newValue.matches(Regex("-?\\d*"))) {
                             minBedrag = newValue
                         }
                     },
@@ -117,7 +116,7 @@ fun TransactionFilterScreen(navController: NavController, loginVM: LoginViewMode
                 OutlinedTextField(
                     value = maxBedrag,
                     onValueChange = { newValue ->
-                        if (newValue.all { it.isDigit() }) {
+                        if (newValue.matches(Regex("-?\\d*"))) {
                             maxBedrag = newValue
                         }
                     },
