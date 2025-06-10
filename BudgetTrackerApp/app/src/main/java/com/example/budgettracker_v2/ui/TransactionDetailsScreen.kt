@@ -1,5 +1,6 @@
 package com.example.budgettracker_v2.ui
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
@@ -10,14 +11,28 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
+import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import com.example.budgettracker_v2.models.Transaction
+import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import com.google.gson.Gson
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionDetailsScreen(transaction: Transaction, navController: NavController) {
+fun TransactionDetailsScreen(
+    transaction: Transaction,
+    navController: NavController,
+    loginVM: LoginViewModel = viewModel(),
+    transactionVM: TransactionViewModel = viewModel()
+) {
+    val loginState by loginVM.uiState.collectAsState()
+    val coroutineScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var isDeleting by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -28,7 +43,8 @@ fun TransactionDetailsScreen(transaction: Transaction, navController: NavControl
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         Column(
             modifier = Modifier.fillMaxSize().padding(paddingValues).padding(16.dp),
@@ -57,7 +73,8 @@ fun TransactionDetailsScreen(transaction: Transaction, navController: NavControl
                         val transactionJson = Gson().toJson(transaction)
                         navController.navigate("transactionEdit/$transactionJson")
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    enabled = !isDeleting
                 ) {
                     Text("Bewerken")
                 }
@@ -65,13 +82,64 @@ fun TransactionDetailsScreen(transaction: Transaction, navController: NavControl
                 Spacer(modifier = Modifier.width(8.dp))
 
                 Button(
-                    onClick = {},
+                    onClick = { showDeleteDialog = true },
                     modifier = Modifier.weight(1f),
-                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error)
+                    colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.error),
+                    enabled = !isDeleting
                 ) {
-                    Text("Verwijderen")
+                    if (isDeleting) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onError
+                        )
+                    } else {
+                        Text("Verwijderen")
+                    }
                 }
             }
         }
+    }
+
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Transactie verwijderen") },
+            text = { Text("Weet je zeker dat je deze transactie wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showDeleteDialog = false
+                        coroutineScope.launch {
+                            isDeleting = true
+                            try {
+                                val response = apiTransaction.deleteTransacties(transaction.tr_id.toString())
+                                if (response.isSuccessful) {
+                                    snackbarHostState.showSnackbar("Transactie succesvol verwijderd")
+                                    transactionVM.getTransactions(loginState.userId.toString())
+                                    navController.navigate("transactions") {
+                                        popUpTo("transactions") { inclusive = true }
+                                    }
+                                } else {
+                                    snackbarHostState.showSnackbar("Fout bij verwijderen van transactie")
+                                }
+                            } catch (e: Exception) {
+                                Log.e("TransactionDetails", "Error deleting transaction", e)
+                                snackbarHostState.showSnackbar("Er is een fout opgetreden")
+                            } finally {
+                                isDeleting = false
+                            }
+                        }
+                    }
+                ) {
+                    Text("Verwijderen", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Annuleren")
+                }
+            }
+        )
     }
 }
