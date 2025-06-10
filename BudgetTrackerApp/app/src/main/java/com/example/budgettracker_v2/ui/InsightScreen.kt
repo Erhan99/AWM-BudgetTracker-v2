@@ -20,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -147,8 +148,20 @@ fun InsightScreen(VM: TransactionViewModel = viewModel(), loginViewModel: LoginV
                 Log.e("ChartCrash", "Error running Vico transaction", e)
             }
         }
-
-
+        Column (
+            modifier = Modifier.fillMaxWidth()
+        ){
+            Box (
+                modifier = Modifier.fillMaxWidth()
+            ){
+                Text(
+                    text = "Inzichten",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
         if(data7days.isNotEmpty() && dataMaandCat.isNotEmpty()){
             BedragPerCategorieChart(modelProducer, dataMaandCat, dataJaarCat, data7days)
             BedragChart(modelProducer2, dataMaandBedrag, dataJaarBedrag, data7DaysBedrag)
