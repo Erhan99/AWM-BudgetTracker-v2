@@ -3,6 +3,7 @@ package com.example.budgettracker_v2.ui
 import android.app.DatePickerDialog
 import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -25,13 +26,14 @@ import com.example.budgettracker_v2.repositories.datum.apiDatum
 import com.example.budgettracker_v2.repositories.transaction.PostTransactionDto
 import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import com.example.budgettracker_v2.viewmodels.LoginViewModel
+import com.example.budgettracker_v2.viewmodels.TransactionViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewModel = viewModel()) {
+fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewModel = viewModel(), VM: TransactionViewModel = viewModel()) {
     val loginState by loginVM.uiState.collectAsState()
 
     val coroutineScope = rememberCoroutineScope()
@@ -44,6 +46,7 @@ fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewMode
     val categories = remember { mutableStateListOf<Categorie>() }
     var expanded by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
+    val selectedOption = remember { mutableStateOf("Inkomst") }
 
     LaunchedEffect(Unit) {
         coroutineScope.launch {
@@ -90,6 +93,40 @@ fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewMode
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { selectedOption.value = "Inkomst" }
+                ) {
+                    RadioButton(
+                        selected = (selectedOption.value == "Inkomst"),
+                        onClick = { selectedOption.value = "Inkomst" }
+                    )
+                    Text(
+                        text = "Inkomst",
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(16.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable { selectedOption.value = "Uitgave" }
+                ) {
+                    RadioButton(
+                        selected = (selectedOption.value == "Uitgave"),
+                        onClick = { selectedOption.value = "Uitgave" }
+                    )
+                    Text(
+                        text = "Uitgave",
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
+                }
+            }
             ExposedDropdownMenuBox(
                 expanded = expanded,
                 onExpandedChange = { expanded = it }
@@ -167,7 +204,7 @@ fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewMode
                         val datumId = datumData.dt_id
                         val nieuweTransactie = loginState.balansId?.let {
                             PostTransactionDto(
-                                tr_bedrag = bedrag.toDouble(),
+                                tr_bedrag = if (selectedOption.value == "Uitgave") -bedrag.toDouble() else bedrag.toDouble(),
                                 tr_mededeling = mededeling,
                                 tr_begunstigde = begunstigde,
                                 tr_dt_id = datumId,
@@ -178,6 +215,7 @@ fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewMode
                         if (nieuweTransactie != null) {
                             val response = apiTransaction.postTransacties(nieuweTransactie)
                             if (response.isSuccessful) {
+                                VM.getTransactions(loginState.userId.toString())
                                 navController.navigate("transactions")
                             } else {
                                 snackbarHostState.showSnackbar("Fout bij aanmaken transactie.")
