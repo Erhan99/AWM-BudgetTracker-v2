@@ -105,7 +105,7 @@ fun TransactionFilterScreen(navController: NavController, loginVM: LoginViewMode
                 OutlinedTextField(
                     value = minBedrag,
                     onValueChange = { newValue ->
-                        if (newValue.matches(Regex("-?\\d*"))) {
+                        if (newValue.matches(Regex("^-?\\d*\\.?\\d*$"))) {
                             minBedrag = newValue
                         }
                     },
@@ -116,7 +116,7 @@ fun TransactionFilterScreen(navController: NavController, loginVM: LoginViewMode
                 OutlinedTextField(
                     value = maxBedrag,
                     onValueChange = { newValue ->
-                        if (newValue.matches(Regex("-?\\d*"))) {
+                        if (newValue.matches(Regex("^-?\\d*\\.?\\d*$"))) {
                             maxBedrag = newValue
                         }
                     },

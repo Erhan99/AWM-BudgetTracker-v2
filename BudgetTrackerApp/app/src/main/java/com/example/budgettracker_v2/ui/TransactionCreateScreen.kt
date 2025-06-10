@@ -27,6 +27,8 @@ import com.example.budgettracker_v2.repositories.transaction.PostTransactionDto
 import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
+import kotlinx.coroutines.Delay
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -216,6 +218,7 @@ fun TransactionCreateScreen(navController: NavController, loginVM: LoginViewMode
                             val response = apiTransaction.postTransacties(nieuweTransactie)
                             if (response.isSuccessful) {
                                 VM.getTransactions(loginState.userId.toString())
+                                delay(500)
                                 navController.navigate("transactions")
                             } else {
                                 snackbarHostState.showSnackbar("Fout bij aanmaken transactie.")

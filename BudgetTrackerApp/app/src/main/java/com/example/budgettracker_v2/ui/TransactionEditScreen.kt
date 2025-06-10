@@ -24,6 +24,7 @@ import com.example.budgettracker_v2.repositories.datum.apiDatum
 import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
@@ -102,7 +103,7 @@ fun TransactionEditScreen(
             OutlinedTextField(
                 value = bedrag,
                 onValueChange = { newValue ->
-                    if (newValue.isEmpty() || newValue.matches(Regex("^\\d*\\.?\\d*$"))) {
+                    if (newValue.matches(Regex("^-?\\d*\\.?\\d*$"))) {
                         bedrag = newValue
                     }
                 },
@@ -240,7 +241,8 @@ fun TransactionEditScreen(
                                     snackbarHostState.showSnackbar("Transactie succesvol bijgewerkt")
                                     // Refresh transactions list
                                     transactionVM.getTransactions(loginState.userId.toString())
-                                    navController.popBackStack()
+                                    delay(500)
+                                    navController.navigate("transactions")
                                 } else {
                                     snackbarHostState.showSnackbar("Fout bij bijwerken van transactie")
                                 }
