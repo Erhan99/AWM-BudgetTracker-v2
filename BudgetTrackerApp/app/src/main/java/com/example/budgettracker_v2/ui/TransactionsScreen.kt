@@ -60,6 +60,7 @@ import com.example.budgettracker_v2.repositories.transaction.apiTransaction
 import com.example.budgettracker_v2.viewmodels.LoginViewModel
 import com.example.budgettracker_v2.viewmodels.TransactionViewModel
 import com.google.gson.Gson
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -320,6 +321,8 @@ fun TransactionDropDownMenu(
                                 if (response.isSuccessful) {
                                     // Refresh the transactions list
                                     transactionVM.getTransactions(loginState.userId.toString())
+                                    delay(500)
+                                    navController.navigate("transactions")
                                 } else {
                                     // Handle error - you might want to show a snackbar here
                                     Log.e("TransactionDelete", "Failed to delete transaction")
