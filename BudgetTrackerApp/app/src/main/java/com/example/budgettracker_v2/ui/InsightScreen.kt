@@ -244,7 +244,7 @@ fun BedragPerCategorieChart(modelProducer: CartesianChartModelProducer, dataMaan
                     modifier = Modifier.padding(end = 6.dp)
                 ) {
                     Text(
-                        text = "7 dagen"
+                        text = "Week"
                     )
                 }
 
